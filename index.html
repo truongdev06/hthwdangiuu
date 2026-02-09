@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Góc Của Công Chúa ✨</title>
+    <style>
+        :root { --pink-main: #ff85a2; --pink-light: #ffccd5; --text-color: #4a4a4a; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fff5f7; text-align: center; padding: 20px; color: var(--text-color); margin: 0; }
+        .container { max-width: 400px; margin: auto; }
+        .card { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 20px rgba(255, 133, 162, 0.15); margin-bottom: 20px; border: 1px solid var(--pink-light); }
+        h2, h3 { color: var(--pink-main); margin-top: 0; }
+        .mood-btn { background: none; border: 2px solid #f0f0f0; border-radius: 15px; padding: 10px; margin: 5px; cursor: pointer; font-size: 24px; transition: 0.3s; width: 70px; }
+        .mood-btn:hover { border-color: var(--pink-main); background: #fff0f5; }
+        .water-btn { background: var(--pink-main); color: white; border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; box-shadow: 0 4px 10px rgba(255, 133, 162, 0.3); }
+        .water-btn:active { transform: scale(0.98); }
+        .info-text { font-size: 15px; line-height: 1.5; color: #777; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>Chào bé yêu! ❤️</h2>
+            <p id="cycle-info" style="font-weight: bold; font-size: 18px;"></p>
+            <p class="info-text">Anh luôn ở đây để chăm sóc em.</p>
+        </div>
+
+        <div class="card">
+            <h3>Hôm nay em thấy sao?</h3>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+                <button class="mood-btn" onclick="sendToAnh('😊 Vui vẻ, yêu đời')">😊</button>
+                <button class="mood-btn" onclick="sendToAnh('😔 Hơi mệt/Buồn')">😔</button>
+                <button class="mood-btn" onclick="sendToAnh('😡 Dễ cáu gắt nha')">😡</button>
+                <button class="mood-btn" onclick="sendToAnh('🤢 Đau bụng/Khó chịu')">🤢</button>
+            </div>
+            <p class="info-text" style="margin-top: 10px;">Bấm icon để anh biết nha!</p>
+        </div>
+
+        <div class="card">
+            <h3>Nhắc em xíu nè</h3>
+            <p class="info-text">🥤 Uống một ly nước ấm cho khỏe em nhé!</p>
+            <button class="water-btn" onclick="sendToAnh('✅ Em đã uống nước rồi ạ!')">Em đã uống nước rồi</button>
+        </div>
+    </div>
+
+    <script>
+        // THÔNG TIN CỦA BẠN (Đã điền từ ảnh bạn gửi)
+        const BOT_TOKEN = '7894041842:AAGP4VvrtPy-Acpx1CyCkuNYEdvIJuJVhTU'; 
+        const CHAT_ID = '6256075469'; // Dãy số bạn lấy từ @userinfobot
+
+        function sendToAnh(content) {
+            const message = `📢 Thông báo từ bé yêu:\n-------------------\n${content}`;
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`;
+            
+            fetch(url)
+            .then(res => {
+                if(res.ok) alert("Đã báo cho anh rồi ạ! ✨");
+                else alert("Lỗi gửi tin nhắn!");
+            });
+        }
+
+        // Logic tính ngày: Bạn hãy sửa ngày dưới đây mỗi tháng
+        const startDay = new Date("2026-02-05"); // Ngày bắt đầu kỳ gần nhất
+        const cycle = 28; // Số ngày chu kỳ trung bình
+        
+        const nextDate = new Date(startDay);
+        nextDate.setDate(startDay.getDate() + cycle);
+        const diff = Math.ceil((nextDate - new Date()) / (1000 * 60 * 60 * 24));
+        
+        document.getElementById('cycle-info').innerText = 
+            diff > 0 ? `Còn khoảng ${diff} ngày nữa tới kỳ nè!` : `Sắp đến kỳ rồi, em nhớ giữ ấm nhé!`;
+    </script>
+</body>
+</html>
