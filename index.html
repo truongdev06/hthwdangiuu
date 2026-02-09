@@ -5,75 +5,155 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Góc Của Công Chúa ✨</title>
     <style>
-        :root { --pink-main: #ff85a2; --pink-light: #ffccd5; --text-color: #4a4a4a; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fff5f7; text-align: center; padding: 20px; color: var(--text-color); margin: 0; }
+        :root { --pink-main: #ff85a2; --pink-light: #ffccd5; --text-color: #4a4a4a; --red-emergency: #ff4d6d; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fff5f7; text-align: center; padding: 20px; color: var(--text-color); margin: 0; overflow-x: hidden; }
         .container { max-width: 400px; margin: auto; }
-        .card { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 20px rgba(255, 133, 162, 0.15); margin-bottom: 20px; border: 1px solid var(--pink-light); }
+        .card { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 20px rgba(255, 133, 162, 0.15); margin-bottom: 20px; border: 1px solid var(--pink-light); position: relative; }
         h2, h3 { color: var(--pink-main); margin-top: 0; }
-        .mood-btn { background: none; border: 2px solid #f0f0f0; border-radius: 15px; padding: 10px; margin: 5px; cursor: pointer; font-size: 24px; transition: 0.3s; width: 70px; }
-        .mood-btn:hover { border-color: var(--pink-main); background: #fff0f5; }
-        .water-btn { background: var(--pink-main); color: white; border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; box-shadow: 0 4px 10px rgba(255, 133, 162, 0.3); }
-        .water-btn:active { transform: scale(0.98); }
-        .info-text { font-size: 15px; line-height: 1.5; color: #777; }
+        
+        /* Mood buttons */
+        .mood-btn { background: white; border: 2px solid #f0f0f0; border-radius: 15px; padding: 10px; margin: 5px; cursor: pointer; font-size: 24px; transition: 0.3s; width: 70px; }
+        .mood-btn.selected { border-color: var(--pink-main); background: #fff0f5; transform: scale(1.1); }
+        
+        /* Form elements */
+        input[type="date"], textarea { border: 2px solid var(--pink-light); padding: 12px; border-radius: 15px; outline: none; width: 100%; box-sizing: border-box; font-family: inherit; margin-top: 10px; }
+        textarea { resize: none; height: 80px; }
+        
+        /* Action buttons */
+        .main-btn { background: var(--pink-main); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; box-shadow: 0 4px 15px rgba(255, 133, 162, 0.4); margin-top: 20px; transition: 0.3s; }
+        .main-btn:hover { background: #ff6b91; }
+        .emergency-btn { background: white; color: var(--red-emergency); border: 2px solid var(--red-emergency); padding: 10px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; }
+
+        /* Heart animation */
+        .heart { position: fixed; color: #ff85a2; font-size: 20px; pointer-events: none; z-index: 999; animation: fly 3s linear forwards; }
+        @keyframes fly { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
     </style>
 </head>
 <body>
+
     <div class="container">
         <div class="card">
-            <h2>xin chaooo Hoang Thu dang iuuu cua anhhh! ❤️</h2>
-            <p id="cycle-info" style="font-weight: bold; font-size: 18px;"></p>
-            <p class="info-text">Anh luôn ở đây để chăm sóc em.</p>
+            <h2 id="greeting">Chào bé yêu! ❤️</h2>
+            <p id="quote" style="font-style: italic; font-size: 14px; color: #888;"></p>
         </div>
 
         <div class="card">
-            <h3>Hôm nay em thấy sao?</h3>
-            <div style="display: flex; flex-wrap: wrap; justify-content: center;">
-                <button class="mood-btn" onclick="sendToAnh('😊 Vui vẻ, yêu đời')">😊</button>
-                <button class="mood-btn" onclick="sendToAnh('😔 Hơi mệt/Buồn')">😔</button>
-                <button class="mood-btn" onclick="sendToAnh('😡 Dễ cáu gắt nha')">😡</button>
-                <button class="mood-btn" onclick="sendToAnh('🤢 Đau bụng/Khó chịu')">🤢</button>
+            <h3>📅 Chu kỳ của em</h3>
+            <p class="info-text" style="font-size: 13px;">Ngày bắt đầu kỳ gần nhất:</p>
+            <input type="date" id="cycle-date" onchange="updateCycleInfo()">
+            <p id="cycle-result" style="font-weight: bold; margin-top: 10px; color: var(--pink-main);"></p>
+        </div>
+
+        <div class="card">
+            <h3>✨ Hôm nay em thấy...</h3>
+            <div id="mood-container">
+                <button class="mood-btn" onclick="toggleMood(this, '😊 Vui vẻ')">😊</button>
+                <button class="mood-btn" onclick="toggleMood(this, '😔 Hơi mệt')">😔</button>
+                <button class="mood-btn" onclick="toggleMood(this, '😡 Dễ cáu')">😡</button>
+                <button class="mood-btn" onclick="toggleMood(this, '🤢 Đau bụng')">🤢</button>
             </div>
-            <p class="info-text" style="margin-top: 10px;">Bấm icon để anh biết nha!</p>
         </div>
 
         <div class="card">
-            <h3>Nhắc em xíu nè</h3>
-            <p class="info-text">🥤 Uống một ly nước ấm cho khỏe em nhé!</p>
-            <button class="water-btn" onclick="sendToAnh('✅ Em đã uống nước rồi ạ!')">Em đã uống nước rồi</button>
+            <h3>💌 Lời nhắn cho Anh</h3>
+            <textarea id="note" placeholder="Em muốn nói gì với anh không?"></textarea>
+            
+            <button class="main-btn" onclick="submitReport()">Gửi báo cáo cho Anh ❤️</button>
+            
+            <button class="emergency-btn" onclick="sendEmergency()">🚨 EM CẦN ANH GẤP!</button>
         </div>
     </div>
 
     <script>
-        // THÔNG TIN CỦA BẠN (Đã điền từ ảnh bạn gửi)
-        // THÔNG TIN CỦA BẠN
-const BOT_TOKEN = '7894041842:AAE_20FBwZ_fVnClNdifmLtX4GP2haBpOPg'; 
-const CHAT_ID = '6256075469';
+        const BOT_TOKEN = '7894041842:AAE_20FBwZ_fVnClNdifmLtX4GP2haBpOPg';
+        const CHAT_ID = '6256075469';
 
-        function sendToAnh(content) {
-            const message = `📢 Thông báo từ bé yêu:\n-------------------\n${content}`;
-            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`;
+        let selectedMoods = [];
+
+        // 1. Lời chào theo buổi & Thính ngẫu nhiên
+        const quotes = [
+            "Hôm nay em xinh đẹp nhất trong mắt anh!",
+            "Nhớ uống đủ nước cho da xinh nhé công chúa.",
+            "Dù thế nào thì anh vẫn luôn ở đây bên em.",
+            "Em là điều tuyệt vời nhất mà anh có được."
+        ];
+        
+        window.onload = () => {
+            const hour = new Date().getHours();
+            let greet = "Chào buổi tối bé yêu! 🌙";
+            if (hour < 12) greet = "Chào buổi sáng bé yêu! ☀️";
+            else if (hour < 18) greet = "Chào buổi chiều bé yêu! 🌤️";
+            document.getElementById('greeting').innerText = greet;
+            document.getElementById('quote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
             
-            fetch(url)
-            .then(res => {
-                if(res.ok) alert("Đã báo cho anh rồi ạ! ✨");
+            // Load ngày cũ nếu có
+            const savedDate = localStorage.getItem('last_cycle');
+            if(savedDate) {
+                document.getElementById('cycle-date').value = savedDate;
+                updateCycleInfo();
+            }
+        };
+
+        // 2. Chọn tâm trạng (chọn nhiều)
+        function toggleMood(btn, mood) {
+            btn.classList.toggle('selected');
+            if(btn.classList.contains('selected')) selectedMoods.push(mood);
+            else selectedMoods = selectedMoods.filter(m => m !== mood);
+        }
+
+        // 3. Tính ngày chu kỳ
+        function updateCycleInfo() {
+            const dateVal = document.getElementById('cycle-date').value;
+            localStorage.setItem('last_cycle', dateVal);
+            const diff = Math.ceil((new Date(dateVal).setDate(new Date(dateVal).getDate() + 28) - new Date()) / (1000*60*60*24));
+            let txt = diff > 0 ? `Còn khoảng ${diff} ngày nữa tới kỳ.` : "Sắp đến kỳ rồi, chú ý sức khỏe nhé!";
+            document.getElementById('cycle-result').innerText = txt;
+        }
+
+        // 4. Hiệu ứng trái tim
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 3000);
+        }
+
+        // 5. Gửi báo cáo tổng hợp
+        function submitReport() {
+            const note = document.getElementById('note').value;
+            const cycle = document.getElementById('cycle-result').innerText;
+            const moodStr = selectedMoods.length > 0 ? selectedMoods.join(', ') : "Em không chọn";
+            
+            const fullMessage = `📊 BÁO CÁO TỪ CÔNG CHÚA:\n` +
+                                `---------------------------\n` +
+                                `💓 Tình trạng: ${moodStr}\n` +
+                                `📅 Chu kỳ: ${cycle}\n` +
+                                `📝 Lời nhắn: ${note || "Không có lời nhắn"}\n` +
+                                `---------------------------\n` +
+                                `💌 Anh nhớ xem và rep bé nhé!`;
+
+            sendMessage(fullMessage, "Đã gửi báo cáo thành công! ❤️");
+            for(let i=0; i<15; i++) setTimeout(createHeart, i*100);
+        }
+
+        // 6. Gửi khẩn cấp
+        function sendEmergency() {
+            const confirmEm = confirm("Bé đang cần anh gấp lắm đúng không?");
+            if(confirmEm) {
+                sendMessage("🚨 CẤP BÁO: BÉ YÊU ĐANG CẦN ANH GẤP!!! HÃY GỌI CHO CÔ ẤY NGAY! 🚨", "Anh đang tới đây, đợi anh nhé! 🏃‍♂️");
+            }
+        }
+
+        function sendMessage(text, successAlert) {
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`;
+            fetch(url).then(res => {
+                if(res.ok) alert(successAlert);
                 else alert("Lỗi gửi tin nhắn!");
             });
         }
-
-        // Logic tính ngày: Bạn hãy sửa ngày dưới đây mỗi tháng
-        const startDay = new Date("2026-02-05"); // Ngày bắt đầu kỳ gần nhất
-        const cycle = 28; // Số ngày chu kỳ trung bình
-        
-        const nextDate = new Date(startDay);
-        nextDate.setDate(startDay.getDate() + cycle);
-        const diff = Math.ceil((nextDate - new Date()) / (1000 * 60 * 60 * 24));
-        
-        document.getElementById('cycle-info').innerText = 
-            diff > 0 ? `Còn khoảng ${diff} ngày nữa tới kỳ nè!` : `Sắp đến kỳ rồi, em nhớ giữ ấm nhé!`;
     </script>
 </body>
-
 </html>
-
-
-
